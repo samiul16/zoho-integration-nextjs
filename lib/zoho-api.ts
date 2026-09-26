@@ -1,10 +1,11 @@
 import axios from "axios";
-import { getTokens, setTokens } from "./token-store";
+import { getAccessToken, getRefreshToken, setTokens } from "./token-store";
 
 export async function getValidToken() {
-  const { accessToken, refreshToken, expiresAt } = getTokens();
+  const accessToken = await getAccessToken();
+  const refreshToken = await getRefreshToken();
 
-  if (Date.now() < expiresAt) return accessToken;
+  if (accessToken) return accessToken;
 
   // Token expired, refresh it
   const response = await axios.post(

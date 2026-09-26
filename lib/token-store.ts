@@ -1,11 +1,32 @@
-let accessToken: string | null = null;
-let refreshToken: string | null = null;
-let expiresAt: number = 0; // Timestamp in milliseconds
+import { cookies } from "next/headers";
 
-export const setTokens = (at: string, rt: string, expiresIn: number) => {
-  accessToken = at;
-  refreshToken = rt;
-  expiresAt = Date.now() + expiresIn * 1000 - 60000; // Buffer 1 min
-};
+export async function setTokens(at: string, rt: string, expires_in: number) {
+  const cookieStore = await cookies();
+  const expires = new Date(Date.now() + expires_in * 1000);
 
-export const getTokens = () => ({ accessToken, refreshToken, expiresAt });
+  // Set the cookies
+  cookieStore.set("zoho_access_token", at, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production", // Only secure in production
+    sameSite: "lax", // Required for OAuth redirects
+    path: "/",
+    expires,
+  });
+
+  cookieStore.set("zoho_refresh_token", rt, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+  });
+}
+
+export async function getAccessToken() {
+  const cookieStore = await cookies();
+  return cookieStore.get("zoho_access_token")?.value;
+}
+
+export async function getRefreshToken() {
+  const cookieStore = await cookies();
+  return cookieStore.get("zoho_refresh_token")?.value;
+}
