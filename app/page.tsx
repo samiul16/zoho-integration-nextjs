@@ -1,12 +1,19 @@
 "use client";
 import { Card, CardContent } from "@/components/ui/card";
 import LeadsTable from "@/components/LeadsTable"; // Assume you'll update this to shadcn table
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Dashboard() {
+  const router = useRouter();
+  useEffect(() => {
+    console.log("Dashboard mounted");
+    router.push("/leads");
+  }, []);
   return (
     <div className="p-8">
       {/* Header Metrics */}
-      <div className="grid grid-cols-4 gap-4 mb-8">
+      {/* <div className="grid grid-cols-4 gap-4 mb-8">
         {[
           { label: "New Leads", val: "42", trend: "+12%" },
           { label: "Qualified", val: "18", trend: "+4.2%" },
@@ -25,10 +32,10 @@ export default function Dashboard() {
             </CardContent>
           </Card>
         ))}
-      </div>
+      </div> */}
 
       {/* Main Table Container */}
-      <div className="bg-white rounded-xl border shadow-sm">
+      {/* <div className="bg-white rounded-xl border shadow-sm">
         <div className="p-4 border-b flex justify-between items-center">
           <h2 className="font-semibold text-lg">Leads 248</h2>
           <button className="bg-black text-white px-4 py-2 rounded-lg text-sm font-medium">
@@ -36,7 +43,7 @@ export default function Dashboard() {
           </button>
         </div>
         <LeadsTable />
-      </div>
+      </div> */}
     </div>
   );
 }
