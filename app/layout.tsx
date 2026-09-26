@@ -4,6 +4,7 @@ import "./globals.css";
 import Sidebar from "@/components/Sidebar";
 import MobileNav from "@/components/MobileNav";
 import AuthWrapper from "@/components/AuthWrapper"; // Import your AuthWrapper
+import { Toaster } from "sonner";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -44,6 +45,7 @@ export default function RootLayout({
               </div>
             </main>
           </div>
+          <Toaster position="top-right" />
         </AuthWrapper>
       </body>
     </html>

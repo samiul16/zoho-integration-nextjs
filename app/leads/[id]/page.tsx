@@ -9,6 +9,9 @@ export default function LeadDetailsPage() {
   const router = useRouter();
   const [lead, setLead] = useState<Lead | null>(null);
   const [loading, setLoading] = useState(true);
+  //retrive query params from url
+  const searchParams = new URLSearchParams(window.location.search);
+  const isSuccess = searchParams.get("isSuccess");
 
   useEffect(() => {
     const fetchLead = async () => {
@@ -36,6 +39,12 @@ export default function LeadDetailsPage() {
       >
         <ArrowLeft size={16} className="mr-2" /> Back to Leads
       </button>
+
+      {isSuccess && (
+        <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+          Lead updated successfully!
+        </div>
+      )}
 
       <div className="bg-white rounded-2xl border border-slate-200 p-8 shadow-sm">
         <div className="flex items-center gap-4 mb-8">

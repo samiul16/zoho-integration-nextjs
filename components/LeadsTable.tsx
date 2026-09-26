@@ -2,7 +2,6 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 "use client";
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import {
   Plus,
   Search,
@@ -12,6 +11,8 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import LeadModal from "./LeadModal"; // Import the new component
 
 type Lead = {
   id: string;
@@ -35,6 +36,7 @@ export default function LeadsTable() {
   });
 
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const router = useRouter();
 
   const toggleSelect = (id: string) => {
     const next = new Set(selectedIds);
@@ -42,10 +44,7 @@ export default function LeadsTable() {
     setSelectedIds(next);
   };
 
-  const router = useRouter();
-
   const handleCreate = async () => {
-    // Basic Client-Side Validation
     if (
       !formData.First_Name ||
       !formData.Last_Name ||
@@ -63,9 +62,17 @@ export default function LeadsTable() {
         method: "POST",
         body: JSON.stringify(formData),
       });
+      const data = await res.json();
+
+      if (res.status === 409 && data.code === "DUPLICATE_EMAIL") {
+        toast.error("Duplicate Lead", {
+          description: "This email already exists in Zoho CRM.",
+        });
+        return;
+      }
 
       if (!res.ok) throw new Error("Failed to create lead.");
-
+      router.push(`/leads/${data.record.id}?isSuccess=true`);
       setOpen(false);
       setFormData({
         First_Name: "",
@@ -74,7 +81,6 @@ export default function LeadsTable() {
         Email: "",
         Phone: "",
       });
-      fetchLeads();
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -94,7 +100,6 @@ export default function LeadsTable() {
 
   return (
     <div className="w-full max-w-full">
-      {/* Top Metrics - Responsive Grid */}
       <div className="grid grid-cols-2 md:grid-cols-4 border border-slate-200 rounded-lg mb-6 bg-white overflow-hidden shadow-sm">
         {[
           { label: "New Leads", val: "42", icon: Users },
@@ -121,7 +126,6 @@ export default function LeadsTable() {
         ))}
       </div>
 
-      {/* Toolbar */}
       <div className="flex items-center justify-between mb-4 bg-white p-2 rounded-lg border border-slate-200">
         <div className="flex items-center px-3 text-slate-400 w-full md:w-auto">
           <Search size={18} />
@@ -138,7 +142,6 @@ export default function LeadsTable() {
         </button>
       </div>
 
-      {/* Responsive Table Wrapper */}
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-x-auto">
         <table className="w-full min-w-[600px] text-left border-collapse">
           <thead>
@@ -189,45 +192,15 @@ export default function LeadsTable() {
         </table>
       </div>
 
-      {/* Modal */}
-      <AnimatePresence>
-        {open && (
-          <div className="fixed inset-0 bg-black/20 z-50 flex items-center justify-center p-4">
-            <motion.div className="bg-white rounded-2xl p-6 w-full max-w-sm shadow-2xl border border-slate-200">
-              <h2 className="text-lg font-bold mb-4">Create New Lead</h2>
-
-              {error && (
-                <p className="text-red-500 text-xs mb-3 font-medium">{error}</p>
-              )}
-
-              <div className="space-y-3">
-                {["First_Name", "Last_Name", "Company", "Email", "Phone"].map(
-                  (field) => (
-                    <input
-                      key={field}
-                      required={field !== "Phone"} // Phone optional if you prefer
-                      placeholder={field.replace("_", " ")}
-                      className="w-full p-2.5 rounded-lg border border-slate-200 text-sm focus:ring-1 focus:ring-black outline-none"
-                      value={formData[field as keyof typeof formData]}
-                      onChange={(e) =>
-                        setFormData({ ...formData, [field]: e.target.value })
-                      }
-                    />
-                  )
-                )}
-              </div>
-
-              <button
-                disabled={submitting}
-                className="w-full mt-6 bg-[#1e293b] text-white py-2.5 rounded-lg text-sm font-medium hover:bg-slate-800 transition-colors disabled:opacity-50"
-                onClick={handleCreate}
-              >
-                {submitting ? "Saving..." : "Save Lead"}
-              </button>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
+      <LeadModal
+        open={open}
+        setOpen={setOpen}
+        formData={formData}
+        setFormData={setFormData}
+        handleCreate={handleCreate}
+        submitting={submitting}
+        error={error}
+      />
     </div>
   );
 }
