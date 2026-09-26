@@ -1,10 +1,13 @@
 import axios from "axios";
-import { getTokens, setTokens } from "./token-store";
+import { getAccessToken, getRefreshToken, setTokens } from "./token-store";
 
 export async function getValidToken() {
-  const { accessToken, refreshToken, expiresAt } = getTokens();
+  const accessToken = await getAccessToken();
+  const refreshToken = await getRefreshToken();
 
-  if (Date.now() < expiresAt) return accessToken;
+  if (accessToken) return accessToken;
+
+  console.log("Token expired, refreshing...");
 
   // Token expired, refresh it
   const response = await axios.post(
@@ -21,6 +24,7 @@ export async function getValidToken() {
   );
 
   const { access_token, expires_in } = response.data;
+  console.log("New access token:", access_token);
   setTokens(access_token, refreshToken!, expires_in); // Keep same refresh token
   return access_token;
 }

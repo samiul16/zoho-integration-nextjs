@@ -39,7 +39,7 @@ export async function GET(req: NextRequest) {
     // For now, let's log them to verify the flow
     console.log("Tokens received:", { access_token, refresh_token });
 
-    setTokens(access_token, refresh_token, response.data.expires_in);
+    await setTokens(access_token, refresh_token, response.data.expires_in);
 
     // Construct the absolute URL to your home page
     const homeUrl = new URL("/", req.url);
