@@ -40,7 +40,7 @@ export default function RootLayout({
               </div>
 
               {/* Main content area */}
-              <div className="flex-1 overflow-y-auto p-4 md:p-8">
+              <div className="flex-1 overflow-y-auto py-4 md:py-8 bg-white">
                 {children}
               </div>
             </main>

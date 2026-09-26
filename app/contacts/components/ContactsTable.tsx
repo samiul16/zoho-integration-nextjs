@@ -2,43 +2,36 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { useState, useEffect } from "react";
-import {
-  Plus,
-  Search,
-  Users,
-  CheckCircle2,
-  Clock,
-  AlertCircle,
-} from "lucide-react";
+import { Plus, Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import LeadModal from "./LeadModal";
-import Skeleton from "./Skeleton"; // Ensure this component exists
+import CreateContactModal from "./CreateContactModal";
+import Skeleton from "@/components/Skeleton"; // Ensure this path is correct
 
-type Lead = {
+type Contact = {
   id: string;
   First_Name: string;
   Last_Name: string;
-  Company: string;
+  Account_Name: { name: string; id: string } | string | null;
   Email: string;
-  Phone: string;
 };
 
-export default function LeadsTable() {
-  const [leads, setLeads] = useState<Lead[]>([]);
+export default function ContactsTable() {
+  const [contacts, setContacts] = useState<Contact[]>([]);
   const [loading, setLoading] = useState(true);
-  const [open, setOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [open, setOpen] = useState(false);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [formData, setFormData] = useState({
     First_Name: "",
     Last_Name: "",
-    Company: "",
+    Account_Name: "",
     Email: "",
     Phone: "",
+    Account_Id: "",
   });
 
-  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const router = useRouter();
 
   const toggleSelect = (id: string, e: React.MouseEvent) => {
@@ -48,42 +41,60 @@ export default function LeadsTable() {
     setSelectedIds(next);
   };
 
+  const fetchContacts = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch("/api/contacts");
+      const json = await res.json();
+      if (res.ok) setContacts(json.data || []);
+    } catch (error) {
+      console.error("Failed to fetch contacts:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchContacts();
+  }, []);
+
   const handleCreate = async () => {
-    if (
-      !formData.First_Name ||
-      !formData.Last_Name ||
-      !formData.Email ||
-      !formData.Company
-    ) {
+    if (!formData.First_Name || !formData.Last_Name || !formData.Email) {
       setError("Please fill in all required fields.");
       return;
     }
 
     setSubmitting(true);
     setError(null);
+
     try {
-      const res = await fetch("/api/leads", {
+      const res = await fetch("/api/contacts", {
         method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
+
       const data = await res.json();
 
       if (res.status === 409 && data.code === "DUPLICATE_EMAIL") {
-        toast.error("Duplicate Lead", {
+        toast.error("Duplicate Contact", {
           description: "This email already exists in Zoho CRM.",
         });
         return;
       }
 
-      if (!res.ok) throw new Error("Failed to create lead.");
-      router.push(`/leads/${data.record.id}?isSuccess=true`);
+      if (!res.ok) throw new Error(data.message || "Failed to create contact.");
+
+      router.push(`/contacts/${data.record.id}?isSuccess=true`);
       setOpen(false);
+      fetchContacts();
       setFormData({
         First_Name: "",
         Last_Name: "",
-        Company: "",
+        Account_Name: "",
         Email: "",
         Phone: "",
+        Account_Id: "",
       });
     } catch (err: any) {
       setError(err.message);
@@ -92,66 +103,23 @@ export default function LeadsTable() {
     }
   };
 
-  const fetchLeads = async () => {
-    setLoading(true);
-    try {
-      const res = await fetch("/api/leads");
-      const json = await res.json();
-      if (res.ok) setLeads(json.data || []);
-    } catch (err) {
-      console.error("Failed to fetch leads", err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchLeads();
-  }, []);
-
   return (
     <div className="w-full max-w-full">
-      <div className="grid grid-cols-2 md:grid-cols-4 border border-slate-200 mb-6 bg-white overflow-hidden">
-        {[
-          { label: "New Leads", val: "42", icon: Users },
-          { label: "Qualified", val: "18", icon: CheckCircle2 },
-          { label: "Avg Response", val: "1.8h", icon: Clock },
-          { label: "Hot Leads", val: "9", icon: AlertCircle },
-        ].map((item, i) => (
-          <div
-            key={item.label}
-            className={`p-8 ${i % 2 === 1 ? "" : "border-r"} ${
-              i < 2 ? "border-b md:border-b-0" : ""
-            } md:border-b-0 md:border-r ${
-              i === 3 ? "border-r-0" : "border-slate-200"
-            }`}
-          >
-            <div className="flex items-center gap-2 text-slate-400 mb-1">
-              <item.icon size={14} />
-              <p className="text-[10px] uppercase font-bold tracking-widest truncate">
-                {item.label}
-              </p>
-            </div>
-            <p className="text-xl md:text-2xl font-semibold">{item.val}</p>
-          </div>
-        ))}
-      </div>
-
-      <div className="w-full p-4">
+      <div className="p-4">
         <div className="flex items-center justify-between mb-4 bg-white p-2 rounded-lg border border-slate-200">
           <div className="flex items-center px-3 text-slate-400 w-full md:w-auto">
             <Search size={18} />
             <input
               className="ml-2 bg-transparent outline-none text-sm text-black w-full"
-              placeholder="Search..."
+              placeholder="Search contacts..."
             />
           </div>
           <button
             onClick={() => setOpen(true)}
-            className="flex items-center gap-2 bg-[#1e293b] text-white px-3 py-2 md:px-4 rounded-lg text-sm font-medium hover:bg-slate-800 transition-colors whitespace-nowrap"
+            className="flex items-center gap-2 bg-[#1e293b] text-white px-3 py-2 md:px-4 rounded-lg text-sm font-medium hover:bg-slate-800 transition-colors"
           >
             <Plus size={16} />{" "}
-            <span className="hidden md:inline">Add Lead</span>
+            <span className="hidden md:inline">Add Contact</span>
           </button>
         </div>
 
@@ -163,9 +131,8 @@ export default function LeadsTable() {
                   <input type="checkbox" className="rounded" disabled />
                 </th>
                 <th className="p-4">Customer</th>
-                <th className="p-4">Company</th>
+                <th className="p-4">Account</th>
                 <th className="p-4">Email</th>
-                <th className="p-4">Phone</th>
               </tr>
             </thead>
             <tbody>
@@ -185,55 +152,52 @@ export default function LeadsTable() {
                     <td className="p-4">
                       <Skeleton className="w-40 h-4" />
                     </td>
-                    <td className="p-4">
-                      <Skeleton className="w-24 h-4" />
-                    </td>
                   </tr>
                 ))
-              ) : leads.length > 0 ? (
-                leads.map((l: Lead, idx: number) => (
+              ) : contacts.length > 0 ? (
+                contacts.map((c, idx) => (
                   <tr
-                    key={l.id}
+                    key={c.id}
                     className={`${
                       idx % 2 === 0 ? "bg-white" : "bg-slate-50/50"
                     } border-b border-slate-100 transition-colors cursor-pointer hover:bg-slate-50`}
-                    onClick={() => router.push(`/leads/${l.id}`)}
+                    onClick={() => router.push(`/contacts/${c.id}`)}
                   >
                     <td className="p-4">
                       <input
                         type="checkbox"
-                        checked={selectedIds.has(l.id)}
-                        onChange={(e) => toggleSelect(l.id, e as any)}
+                        checked={selectedIds.has(c.id)}
+                        onChange={(e) => toggleSelect(c.id, e as any)}
                         className="rounded text-indigo-600"
                       />
                     </td>
                     <td className="p-4 flex items-center gap-3">
                       <div className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-[10px] font-bold text-slate-500 uppercase shrink-0">
-                        {l.First_Name?.[0] || "?"}
-                        {l.Last_Name?.[0] || "?"}
+                        {c.First_Name?.[0] || "?"}
+                        {c.Last_Name?.[0] || "?"}
                       </div>
                       <span className="font-semibold text-sm truncate">
-                        {l.First_Name} {l.Last_Name}
+                        {c.First_Name} {c.Last_Name}
                       </span>
                     </td>
                     <td className="p-4 text-sm text-slate-600 truncate">
-                      {l.Company}
+                      {typeof c.Account_Name === "object" &&
+                      c.Account_Name !== null
+                        ? (c.Account_Name as any).name
+                        : c.Account_Name}
                     </td>
                     <td className="p-4 text-sm text-slate-600 truncate">
-                      {l.Email}
-                    </td>
-                    <td className="p-4 text-sm text-slate-600 truncate">
-                      {l.Phone}
+                      {c.Email}
                     </td>
                   </tr>
                 ))
               ) : (
                 <tr>
                   <td
-                    colSpan={5}
+                    colSpan={4}
                     className="p-8 text-center text-slate-400 text-sm"
                   >
-                    No leads found.
+                    No contacts found.
                   </td>
                 </tr>
               )}
@@ -242,7 +206,7 @@ export default function LeadsTable() {
         </div>
       </div>
 
-      <LeadModal
+      <CreateContactModal
         open={open}
         setOpen={setOpen}
         formData={formData}

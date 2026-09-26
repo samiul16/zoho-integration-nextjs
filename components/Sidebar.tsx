@@ -9,13 +9,13 @@ export default function Sidebar() {
 
   const menu = [
     { name: "Leads", path: "/leads", icon: Users },
-    { name: "Accounts", path: "/accounts", icon: Building2 },
     { name: "Contacts", path: "/contacts", icon: UserCircle },
+    { name: "Accounts", path: "/accounts", icon: Building2 },
   ];
 
   return (
     // Inside Sidebar.tsx
-    <aside className="w-64 border-r border-slate-200 bg-white h-screen p-4 flex flex-col">
+    <aside className="w-64 border-r-1 border-slate-100 bg-gray-50 h-screen p-4 flex flex-col">
       {/* Logo Area */}
       <div className="flex items-center gap-3 px-2 mb-10 mt-2">
         <div className="w-8 h-8 bg-black rounded-lg text-white flex items-center justify-center font-bold text-xs">
