@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import AuthWrapper from "@/components/AuthWrapper";
 
 export const metadata: Metadata = {
   title: "Zoho CRM Manager",
@@ -13,7 +14,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="antialiased bg-slate-50">{children}</body>
+      <body className="antialiased bg-slate-50">
+        <AuthWrapper>{children}</AuthWrapper>
+      </body>
     </html>
   );
 }
