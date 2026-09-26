@@ -7,6 +7,8 @@ export async function getValidToken() {
 
   if (accessToken) return accessToken;
 
+  console.log("Token expired, refreshing...");
+
   // Token expired, refresh it
   const response = await axios.post(
     "https://accounts.zoho.com/oauth/v2/token",
@@ -22,6 +24,7 @@ export async function getValidToken() {
   );
 
   const { access_token, expires_in } = response.data;
+  console.log("New access token:", access_token);
   setTokens(access_token, refreshToken!, expires_in); // Keep same refresh token
   return access_token;
 }
