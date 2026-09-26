@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/set-state-in-effect */
 "use client";
 import { useState, useEffect } from "react";
@@ -23,17 +24,17 @@ type Lead = {
 export default function LeadsTable() {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     First_Name: "",
     Last_Name: "",
     Company: "",
     Email: "",
+    Phone: "",
   });
 
-  const router = useRouter();
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
   const toggleSelect = (id: string) => {
     const next = new Set(selectedIds);
@@ -41,24 +42,50 @@ export default function LeadsTable() {
     setSelectedIds(next);
   };
 
+  const router = useRouter();
+
+  const handleCreate = async () => {
+    // Basic Client-Side Validation
+    if (
+      !formData.First_Name ||
+      !formData.Last_Name ||
+      !formData.Email ||
+      !formData.Company
+    ) {
+      setError("Please fill in all required fields.");
+      return;
+    }
+
+    setSubmitting(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/leads", {
+        method: "POST",
+        body: JSON.stringify(formData),
+      });
+
+      if (!res.ok) throw new Error("Failed to create lead.");
+
+      setOpen(false);
+      setFormData({
+        First_Name: "",
+        Last_Name: "",
+        Company: "",
+        Email: "",
+        Phone: "",
+      });
+      fetchLeads();
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   const fetchLeads = async () => {
-    setLoading(true);
     const res = await fetch("/api/leads");
     const json = await res.json();
     if (res.ok) setLeads(json.data);
-    setLoading(false);
-  };
-
-  const handleCreate = async () => {
-    setSubmitting(true);
-    await fetch("/api/leads", {
-      method: "POST",
-      body: JSON.stringify(formData),
-    });
-    setSubmitting(false);
-    setOpen(false);
-    setFormData({ First_Name: "", Last_Name: "", Company: "", Email: "" });
-    fetchLeads();
   };
 
   useEffect(() => {
@@ -166,20 +193,22 @@ export default function LeadsTable() {
       <AnimatePresence>
         {open && (
           <div className="fixed inset-0 bg-black/20 z-50 flex items-center justify-center p-4">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-white rounded-2xl p-6 w-full max-w-sm shadow-2xl border border-slate-200"
-            >
+            <motion.div className="bg-white rounded-2xl p-6 w-full max-w-sm shadow-2xl border border-slate-200">
               <h2 className="text-lg font-bold mb-4">Create New Lead</h2>
+
+              {error && (
+                <p className="text-red-500 text-xs mb-3 font-medium">{error}</p>
+              )}
+
               <div className="space-y-3">
-                {["First_Name", "Last_Name", "Company", "Email"].map(
+                {["First_Name", "Last_Name", "Company", "Email", "Phone"].map(
                   (field) => (
                     <input
                       key={field}
+                      required={field !== "Phone"} // Phone optional if you prefer
                       placeholder={field.replace("_", " ")}
                       className="w-full p-2.5 rounded-lg border border-slate-200 text-sm focus:ring-1 focus:ring-black outline-none"
+                      value={formData[field as keyof typeof formData]}
                       onChange={(e) =>
                         setFormData({ ...formData, [field]: e.target.value })
                       }
@@ -187,6 +216,7 @@ export default function LeadsTable() {
                   )
                 )}
               </div>
+
               <button
                 disabled={submitting}
                 className="w-full mt-6 bg-[#1e293b] text-white py-2.5 rounded-lg text-sm font-medium hover:bg-slate-800 transition-colors disabled:opacity-50"
