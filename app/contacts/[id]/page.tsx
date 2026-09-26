@@ -4,7 +4,7 @@ import { useParams, useRouter } from "next/navigation";
 import { ArrowLeft, Building2, Mail, User, Phone } from "lucide-react";
 import { Lead } from "@/types/lead";
 
-export default function LeadDetailsPage() {
+export default function ContactDetailsPage() {
   const { id } = useParams();
   const router = useRouter();
   const [lead, setLead] = useState<Lead | null>(null);
@@ -16,7 +16,7 @@ export default function LeadDetailsPage() {
   useEffect(() => {
     const fetchLead = async () => {
       try {
-        const res = await fetch(`/api/leads/${id}`); // Assuming your API supports /api/leads/[id]
+        const res = await fetch(`/api/contacts/${id}`); // Assuming your API supports /api/contacts/[id]
         const json = await res.json();
         setLead(json.data);
       } catch (err) {
@@ -29,7 +29,7 @@ export default function LeadDetailsPage() {
   }, [id]);
 
   if (loading) return <div className="p-8">Loading details...</div>;
-  if (!lead) return <div className="p-8">Lead not found.</div>;
+  if (!lead) return <div className="p-8">Contact not found.</div>;
 
   return (
     <div className="max-w-3xl mx-auto p-6">
@@ -37,12 +37,12 @@ export default function LeadDetailsPage() {
         onClick={() => router.back()}
         className="flex items-center text-sm text-slate-500 mb-6 hover:text-black"
       >
-        <ArrowLeft size={16} className="mr-2" /> Back to Leads
+        <ArrowLeft size={16} className="mr-2" /> Back to Contacts
       </button>
 
       {isSuccess && (
         <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
-          Lead updated successfully!
+          Contact updated successfully!
         </div>
       )}
 
@@ -78,7 +78,7 @@ export default function LeadDetailsPage() {
           />
           <DetailItem
             icon={<User size={18} />}
-            label="Lead ID"
+            label="Contact ID"
             value={lead.id}
           />
         </div>

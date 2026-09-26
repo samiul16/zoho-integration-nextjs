@@ -4,6 +4,7 @@ import "./globals.css";
 import Sidebar from "@/components/Sidebar";
 import MobileNav from "@/components/MobileNav";
 import AuthWrapper from "@/components/AuthWrapper"; // Import your AuthWrapper
+import { Toaster } from "sonner";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -39,11 +40,12 @@ export default function RootLayout({
               </div>
 
               {/* Main content area */}
-              <div className="flex-1 overflow-y-auto p-4 md:p-8">
+              <div className="flex-1 overflow-y-auto py-4 md:py-8 bg-white">
                 {children}
               </div>
             </main>
           </div>
+          <Toaster position="top-right" />
         </AuthWrapper>
       </body>
     </html>
