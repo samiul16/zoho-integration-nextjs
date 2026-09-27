@@ -18,7 +18,7 @@ export default function Sidebar() {
     <aside className="w-64 border-r-1 border-slate-100 bg-gray-50 h-screen p-4 flex flex-col">
       {/* Logo Area */}
       <div className="flex items-center gap-3 px-2 mb-10 mt-2">
-        <div className="w-8 h-8 bg-black rounded-lg text-white flex items-center justify-center font-bold text-xs">
+        <div className="w-8 h-8 bg-indigo-600 rounded-lg text-white flex items-center justify-center font-bold text-xs">
           W
         </div>
         <div className="flex flex-col">

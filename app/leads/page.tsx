@@ -12,8 +12,10 @@ import {
 } from "lucide-react";
 import LeadsTable from "./components/LeadsTable";
 import LeadModal from "./components/LeadsModal";
+import { useRouter } from "next/navigation";
 
 export default function LeadsPage() {
+  const router = useRouter();
   const [leads, setLeads] = useState([]);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
@@ -58,21 +60,30 @@ export default function LeadsPage() {
       ) {
         setError("Please fill in all required fields");
         return;
+      } else if (res.status === 400 && json.code === "INVALID_DATA") {
+        if (!formData.email.includes("@")) {
+          setError("Invalid email format");
+        } else {
+          setError(json.message || "Invalid data provided");
+        }
+        return;
       }
+
       if (json.success) {
-        setOpen(false);
-        setFormData({
-          first_name: "",
-          last_name: "",
-          email: "",
-          phone: "",
-          company: "",
-          lead_source: "",
-          status: "",
-          description: "",
-        });
+        router.push(`/leads/${json.record.id}/?isSuccess=true`);
+        // setOpen(false);
+        // setFormData({
+        //   first_name: "",
+        //   last_name: "",
+        //   email: "",
+        //   phone: "",
+        //   company: "",
+        //   lead_source: "",
+        //   status: "",
+        //   description: "",
+        // });
         // Refresh leads list
-        fetchData(1);
+        // fetchData(1);
       } else {
         setError(json.message || "Failed to create lead");
       }
@@ -92,20 +103,40 @@ export default function LeadsPage() {
       {/* Stats Bar */}
       <div className="grid grid-cols-4 gap-4 mb-6">
         {[
-          { label: "New Leads", val: "42", icon: Users },
-          { label: "Qualified", val: "18", icon: CheckCircle2 },
-          { label: "Avg Response", val: "1.8h", icon: Clock },
-          { label: "Hot Leads", val: "9", icon: AlertCircle },
+          {
+            label: "New Leads",
+            val: "42",
+            icon: Users,
+            color: "text-indigo-600",
+          },
+          {
+            label: "Qualified",
+            val: "18",
+            icon: CheckCircle2,
+            color: "text-green-600",
+          },
+          {
+            label: "Avg Response",
+            val: "1.8h",
+            icon: Clock,
+            color: "text-blue-600",
+          },
+          {
+            label: "Hot Leads",
+            val: "9",
+            icon: AlertCircle,
+            color: "text-red-600",
+          },
         ].map((item) => (
           <div
             key={item.label}
             className="bg-white p-6 rounded-lg border border-slate-200"
           >
             <div className="flex items-center gap-2 text-slate-400 mb-1">
-              <item.icon size={14} />
-              <p className="text-[10px] uppercase font-bold">{item.label}</p>
+              <item.icon size={14} className={item.color} />
+              <p className={`text-[10px] uppercase font-bold `}>{item.label}</p>
             </div>
-            <p className="text-xl font-semibold">{item.val}</p>
+            <p className={`text-xl font-semibold ${item.color}`}>{item.val}</p>
           </div>
         ))}
       </div>
@@ -121,7 +152,7 @@ export default function LeadsPage() {
         </div>
         <button
           onClick={() => setOpen(true)}
-          className="flex items-center justify-center gap-2 bg-slate-900 text-white px-4 py-4 rounded-lg text-sm font-medium hover:bg-slate-800 transition-colors whitespace-nowrap"
+          className="flex items-center justify-center gap-2 bg-indigo-500 text-white px-4 py-4 rounded-lg text-sm font-medium hover:bg-slate-800 transition-colors whitespace-nowrap"
         >
           <Plus size={16} className="shrink-0" />
           <span>Add Lead</span>
