@@ -3,17 +3,18 @@ import { Lead } from "@/types/lead";
 import { Progress } from "@/components/ui/progress";
 import Skeleton from "@/components/Skeleton";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Account } from "@/types/accounts";
 
 interface Props {
-  leads: Lead[];
+  accounts: Account[];
   loading: boolean;
   page: number;
   setPage: (p: number | ((prev: number) => number)) => void;
   hasMore: boolean;
 }
 
-export default function LeadsTable({
-  leads,
+export default function AccountsTable({
+  accounts,
   loading,
   page,
   setPage,
@@ -21,7 +22,7 @@ export default function LeadsTable({
 }: Props) {
   return (
     <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-      {/* Loading Progress add text fetching from Zoho */}
+      {/* Loading Progress */}
       {loading && (
         <div className="flex flex-col items-center justify-center p-4">
           {/* Text at the top */}
@@ -38,8 +39,8 @@ export default function LeadsTable({
         <table className="w-full text-left border-collapse">
           <thead className="sticky top-0 bg-slate-50 z-10 border-b border-slate-200">
             <tr className="text-[11px] uppercase tracking-wider text-slate-400">
-              <th className="p-4">Customer</th>
-              <th className="p-4">Company</th>
+              <th className="p-4">Account Name</th>
+              <th className="p-4">Website</th>
               <th className="p-4">Email</th>
               <th className="p-4">Phone</th>
             </tr>
@@ -62,19 +63,19 @@ export default function LeadsTable({
                     </td>
                   </tr>
                 ))
-              : leads.map((l: Lead) => (
+              : accounts.map((a: Account) => (
                   <tr
-                    key={l.id}
+                    key={a.id}
                     className="border-b border-slate-50 hover:bg-slate-50 cursor-pointer"
                   >
                     <td className="p-4 text-sm font-medium">
-                      {l.First_Name} {l.Last_Name}
+                      {a.Account_Name}
                     </td>
                     <td className="p-4 text-sm text-slate-600">
-                      {l.Company || "-"}
+                      {a.Website || "-"}
                     </td>
-                    <td className="p-4 text-sm text-slate-600">{l.Email}</td>
-                    <td className="p-4 text-sm text-slate-600">{l.Phone}</td>
+                    <td className="p-4 text-sm text-slate-600">{a.Email}</td>
+                    <td className="p-4 text-sm text-slate-600">{a.Phone}</td>
                   </tr>
                 ))}
           </tbody>

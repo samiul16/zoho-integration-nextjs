@@ -11,7 +11,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import LeadsTable from "./components/LeadsTable";
-import LeadModal from "@/components/LeadModal";
+import LeadModal from "./components/LeadsModal";
 
 export default function LeadsPage() {
   const [leads, setLeads] = useState([]);
@@ -51,6 +51,14 @@ export default function LeadsPage() {
         body: JSON.stringify(formData),
       });
       const json = await res.json();
+
+      if (
+        res.status === 400 &&
+        (json.code === "INVALID_REQUEST" || json.code === "MANDATORY_NOT_FOUND")
+      ) {
+        setError("Please fill in all required fields");
+        return;
+      }
       if (json.success) {
         setOpen(false);
         setFormData({

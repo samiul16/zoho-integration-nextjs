@@ -125,9 +125,14 @@ export default function ContactsTable() {
         </div>
 
         {loading && (
-          <div className="text-center py-4 text-slate-800">
-            <p className="mb-2">Fetching data from Zoho...</p>
-            <Progress value={33} className="w-[60%] mx-auto" />
+          <div className="flex flex-col items-center justify-center p-4">
+            {/* Text at the top */}
+            <span className="text-xs font-medium text-slate-500 uppercase tracking-widest mb-2">
+              Fetching from Zoho...
+            </span>
+
+            {/* Progress bar below text */}
+            <Progress value={50} className="h-1 w-full max-w-sm rounded-full" />
           </div>
         )}
 
