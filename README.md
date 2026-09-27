@@ -6,6 +6,120 @@ The application implements Zoho CRM OAuth authentication, reads CRM metadata, re
 
 ---
 
+## How to Run the Project
+
+### 1. Clone the Repository
+
+Clone the project repository and navigate into the project directory:
+
+```bash
+git clone <repository-url>
+cd <project-folder>
+```
+
+### 2. Install Dependencies
+
+Install all required npm packages:
+
+```bash
+npm install
+```
+
+### 3. Configure Environment Variables
+
+Create a `.env.local` file in the root directory of the project.
+
+Add the required Zoho CRM OAuth configuration:
+
+```env
+ZOHO_CLIENT_ID=your_client_id
+ZOHO_CLIENT_SECRET=your_client_secret
+ZOHO_REDIRECT_URI=your_redirect_uri
+ZOHO_REFRESH_TOKEN=your_refresh_token
+```
+
+Use the actual environment variable names configured in the application.
+
+> Do not commit `.env.local`, client secrets, access tokens, or refresh tokens to the repository.
+
+### 4. Start the Development Server
+
+Run the Next.js development server:
+
+```bash
+npm run dev
+```
+
+### 5. Open the Application
+
+Once the development server is running, open:
+
+```text
+http://localhost:3000
+```
+
+The application provides separate sections for:
+
+- Leads
+- Accounts
+- Contacts
+
+### 6. Zoho CRM Authorization
+
+If OAuth authorization is required, complete the Zoho CRM authorization flow using the configured Zoho application.
+
+The configured redirect URI in Zoho must exactly match the redirect URI used by the application.
+
+After successful authorization, the application can use the Zoho CRM APIs to retrieve and create Leads, Accounts, and Contacts.
+
+### 7. Production Build
+
+To create a production build:
+
+```bash
+npm run build
+```
+
+To start the production application:
+
+```bash
+npm start
+```
+
+### 8. Vercel Deployment
+
+The application can be deployed to Vercel.
+
+After connecting the repository to Vercel:
+
+1. Configure the required environment variables in the Vercel project settings.
+2. Configure the production OAuth redirect URI in the Zoho API Console.
+3. Deploy the application.
+4. Complete the Zoho OAuth authorization flow using the production URL.
+5. Verify Leads, Accounts, and Contacts functionality.
+
+### Quick Start
+
+For local development:
+
+```bash
+git clone <repository-url>
+cd <project-folder>
+npm install
+```
+
+Create `.env.local`, configure the Zoho credentials, and then run:
+
+```bash
+npm run dev
+```
+
+Open:
+
+```text
+http://localhost:3000
+```
+
 ## 1. Project Overview
 
 ### Main Features
@@ -1096,15 +1210,7 @@ The implementation covers the main practical requirements:
 
 ---
 
-# 29. Useful Interview Explanation
-
-If asked to explain the project:
-
-> I built a Next.js application that integrates with Zoho CRM using OAuth 2.0 and Zoho CRM API v8. I implemented Leads, Accounts, and Contacts with listing, detail retrieval, and creation functionality. I used Zoho's Fields Metadata API to identify the actual field API names and their configuration rather than assuming the UI labels. For Contacts, I implemented the Account lookup relationship using the Account record ID. I also added duplicate email detection, centralized API error handling, access-token management, and a frontend UI using Next.js App Router.
-
----
-
-# 30. Zoho Documentation
+# 29. Zoho Documentation
 
 Official Zoho CRM API documentation:
 
