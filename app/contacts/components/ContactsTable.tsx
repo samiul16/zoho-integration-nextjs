@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import CreateContactModal from "./CreateContactModal";
 import Skeleton from "@/components/Skeleton"; // Ensure this path is correct
+import { Progress } from "@/components/ui/progress";
 
 type Contact = {
   id: string;
@@ -122,6 +123,13 @@ export default function ContactsTable() {
             <span className="hidden md:inline">Add Contact</span>
           </button>
         </div>
+
+        {loading && (
+          <div className="text-center py-4 text-slate-800">
+            <p className="mb-2">Fetching data from Zoho...</p>
+            <Progress value={33} className="w-[60%] mx-auto" />
+          </div>
+        )}
 
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-x-auto">
           <table className="w-full min-w-[600px] text-left border-collapse">
