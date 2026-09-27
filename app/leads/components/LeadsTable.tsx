@@ -3,6 +3,7 @@ import { Lead } from "@/types/lead";
 import { Progress } from "@/components/ui/progress";
 import Skeleton from "@/components/Skeleton";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface Props {
   leads: Lead[];
@@ -19,6 +20,7 @@ export default function LeadsTable({
   setPage,
   hasMore,
 }: Props) {
+  const router = useRouter();
   return (
     <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
       {/* Loading Progress add text fetching from Zoho */}
@@ -67,6 +69,7 @@ export default function LeadsTable({
                   <tr
                     key={l.id}
                     className="border-b border-slate-50 hover:bg-slate-50 cursor-pointer"
+                    onClick={() => router.push(`/leads/${l.id}`)}
                   >
                     <td className="p-4 text-sm font-medium">{l.id}</td>
                     <td className="p-4 text-sm font-medium">

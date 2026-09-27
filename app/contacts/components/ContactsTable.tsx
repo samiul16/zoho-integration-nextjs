@@ -36,7 +36,9 @@ export default function ContactsTable({
         <table className="w-full text-left border-collapse">
           <thead className="sticky top-0 bg-slate-50 z-10 border-b border-slate-200">
             <tr className="text-[11px] uppercase tracking-wider text-slate-400">
+              <th className="p-4">Customer ID</th>
               <th className="p-4">Customer</th>
+
               <th className="p-4">Account</th>
               <th className="p-4">Email</th>
             </tr>
@@ -63,9 +65,11 @@ export default function ContactsTable({
                       className="border-b hover:bg-slate-50 cursor-pointer"
                       onClick={() => router.push(`/contacts/${c.id}`)}
                     >
+                      <td className="p-4 text-sm text-slate-600">{c.id}</td>
                       <td className="p-4 text-sm font-medium">
                         {c.First_Name} {c.Last_Name}
                       </td>
+
                       <td className="p-4 text-sm text-slate-600">
                         {typeof c.Account_Name === "object"
                           ? c.Account_Name?.name

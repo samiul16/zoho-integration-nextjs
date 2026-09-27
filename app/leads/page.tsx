@@ -56,7 +56,9 @@ export default function LeadsPage() {
 
       if (
         res.status === 400 &&
-        (json.code === "INVALID_REQUEST" || json.code === "MANDATORY_NOT_FOUND")
+        (json.code === "INVALID_REQUEST" ||
+          json.code === "MANDATORY_NOT_FOUND" ||
+          json.code === "EXPECTED_PARAM_MISSING")
       ) {
         setError("Please fill in all required fields");
         return;
@@ -142,21 +144,26 @@ export default function LeadsPage() {
       </div>
 
       {/* Action Bar */}
-      <div className="flex items-center justify-between mb-4 bg-white p-2 rounded-lg border border-slate-200 shadow-sm">
-        <div className="flex items-center px-3 text-slate-400 w-full">
+      {/* make separate add button and search bar */}
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-2xl font-bold text-slate-800">Leads</h1>
+        <button
+          onClick={() => setOpen(true)}
+          className="inline-flex items-center gap-2 bg-indigo-500 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-slate-800 whitespace-nowrap"
+        >
+          <Plus size={16} /> <span>Add Lead</span>
+        </button>
+      </div>
+
+      {/* Search Bar */}
+      <div className="mb-4 bg-white p-2 rounded-lg border border-slate-200">
+        <div className="flex items-center px-3 text-slate-400">
           <Search size={18} />
           <input
             className="ml-2 bg-transparent outline-none text-sm w-full"
-            placeholder="Search..."
+            placeholder="Search accounts..."
           />
         </div>
-        <button
-          onClick={() => setOpen(true)}
-          className="flex items-center justify-center gap-2 bg-indigo-500 text-white px-4 py-4 rounded-lg text-sm font-medium hover:bg-slate-800 transition-colors whitespace-nowrap"
-        >
-          <Plus size={16} className="shrink-0" />
-          <span>Add Lead</span>
-        </button>
       </div>
 
       {/* Table Component */}
