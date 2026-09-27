@@ -56,7 +56,9 @@ export default function LeadsPage() {
 
       if (
         res.status === 400 &&
-        (json.code === "INVALID_REQUEST" || json.code === "MANDATORY_NOT_FOUND")
+        (json.code === "INVALID_REQUEST" ||
+          json.code === "MANDATORY_NOT_FOUND" ||
+          json.code === "EXPECTED_PARAM_MISSING")
       ) {
         setError("Please fill in all required fields");
         return;
