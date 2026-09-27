@@ -77,26 +77,34 @@ export default function ContactsTable() {
 
       const data = await res.json();
 
+      console.log("Response status:", res.status);
+      console.log("Response data:", data);
+
       if (res.status === 409 && data.code === "DUPLICATE_EMAIL") {
-        toast.error("Duplicate Contact", {
-          description: "This email already exists in Zoho CRM.",
-        });
+        setError("This email already exists in Zoho CRM.");
+        return;
+      }
+
+      if (res.status === 400 && data.code === "INVALID_DATA") {
+        if (!formData.Email.includes("@")) {
+          setError("Email must be a valid email address.");
+        }
         return;
       }
 
       if (!res.ok) throw new Error(data.message || "Failed to create contact.");
 
       router.push(`/contacts/${data.record.id}?isSuccess=true`);
-      setOpen(false);
-      fetchContacts();
-      setFormData({
-        First_Name: "",
-        Last_Name: "",
-        Account_Name: "",
-        Email: "",
-        Phone: "",
-        Account_Id: "",
-      });
+      // setOpen(false);
+      // fetchContacts();
+      // setFormData({
+      //   First_Name: "",
+      //   Last_Name: "",
+      //   Account_Name: "",
+      //   Email: "",
+      //   Phone: "",
+      //   Account_Id: "",
+      // });
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -143,6 +151,7 @@ export default function ContactsTable() {
                 <th className="p-4 w-10">
                   <input type="checkbox" className="rounded" disabled />
                 </th>
+                <th className="p-4">ID</th>
                 <th className="p-4">Customer</th>
                 <th className="p-4">Account</th>
                 <th className="p-4">Email</th>
@@ -184,6 +193,7 @@ export default function ContactsTable() {
                         className="rounded text-indigo-600"
                       />
                     </td>
+                    <td className="p-4">{c.id}</td>
                     <td className="p-4 flex items-center gap-3">
                       <div className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-[10px] font-bold text-slate-500 uppercase shrink-0">
                         {c.First_Name?.[0] || "?"}

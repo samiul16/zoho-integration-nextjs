@@ -39,7 +39,7 @@ export default function Sidebar() {
             key={item.name}
             onClick={() => router.push(item.path)}
             className={cn(
-              "w-full flex items-center gap-3 px-3 py-2 rounded-md text-[13px] font-medium transition-all",
+              "w-full flex items-center gap-3 px-3 py-2 rounded-md text-[13px] font-medium transition-all cursor-pointer",
               pathname === item.path
                 ? "bg-slate-100 text-black shadow-sm"
                 : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
