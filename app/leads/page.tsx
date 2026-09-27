@@ -11,7 +11,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import LeadsTable from "./components/LeadsTable";
-import LeadModal from "@/components/LeadModal";
+import LeadModal from "./components/LeadsModal";
 
 export default function LeadsPage() {
   const [leads, setLeads] = useState([]);
