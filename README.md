@@ -32,10 +32,11 @@ Create a `.env.local` file in the root directory of the project.
 Add the required Zoho CRM OAuth configuration:
 
 ```env
-ZOHO_CLIENT_ID=your_client_id
-ZOHO_CLIENT_SECRET=your_client_secret
-ZOHO_REDIRECT_URI=your_redirect_uri
-ZOHO_REFRESH_TOKEN=your_refresh_token
+ZOHO_CLIENT_ID=1000.5XUJTON3KE4BSOJURQ1GUC08AWKQMW
+ZOHO_CLIENT_SECRET=3651b5b6c6ccb3516e5975b2b210142d4f1a581b79
+ZOHO_REDIRECT_URI=http://localhost:3000/api/auth/callback
+ZOHO_ACCOUNTS_URL=https://accounts.zoho.com
+ZOHO_API_BASE_URL=https://www.zohoapis.com/crm/v8
 ```
 
 Use the actual environment variable names configured in the application.
