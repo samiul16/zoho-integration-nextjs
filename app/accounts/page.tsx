@@ -30,7 +30,7 @@ export default function AccountsPage() {
         <h1 className="text-2xl font-bold text-slate-800">Accounts</h1>
         <button
           onClick={() => setOpen(true)}
-          className="inline-flex items-center gap-2 bg-slate-900 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-slate-800 whitespace-nowrap"
+          className="inline-flex items-center gap-2 bg-indigo-500 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-slate-800 whitespace-nowrap"
         >
           <Plus size={16} /> <span>Add Account</span>
         </button>

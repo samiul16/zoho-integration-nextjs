@@ -36,18 +36,25 @@ export async function POST(req: Request) {
     const accessToken = await getValidToken();
 
     // Check duplicate
-    const searchResponse = await axios.get(
-      "https://www.zohoapis.com/crm/v8/Contacts/search",
-      {
-        params: { email: body.Email },
-        headers: { Authorization: `Zoho-oauthtoken ${accessToken}` },
-      }
-    );
+    if (body.Email) {
+      const searchResponse = await axios.get(
+        "https://www.zohoapis.com/crm/v8/Contacts/search",
+        {
+          params: { email: body.Email },
+          headers: { Authorization: `Zoho-oauthtoken ${accessToken}` },
+        }
+      );
 
-    if ((searchResponse.data.data || []).length > 0) {
+      if ((searchResponse.data.data || []).length > 0) {
+        return NextResponse.json(
+          { success: false, code: "DUPLICATE_EMAIL" },
+          { status: 409 }
+        );
+      }
+    } else {
       return NextResponse.json(
-        { success: false, code: "DUPLICATE_EMAIL" },
-        { status: 409 }
+        { success: false, code: "EMAIL_REQUIRED" },
+        { status: 400 }
       );
     }
 
