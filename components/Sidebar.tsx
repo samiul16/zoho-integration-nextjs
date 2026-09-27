@@ -18,7 +18,7 @@ export default function Sidebar() {
     <aside className="w-64 border-r-1 border-slate-100 bg-gray-50 h-screen p-4 flex flex-col">
       {/* Logo Area */}
       <div className="flex items-center gap-3 px-2 mb-10 mt-2">
-        <div className="w-8 h-8 bg-black rounded-lg text-white flex items-center justify-center font-bold text-xs">
+        <div className="w-8 h-8 bg-indigo-600 rounded-lg text-white flex items-center justify-center font-bold text-xs">
           W
         </div>
         <div className="flex flex-col">
@@ -39,7 +39,7 @@ export default function Sidebar() {
             key={item.name}
             onClick={() => router.push(item.path)}
             className={cn(
-              "w-full flex items-center gap-3 px-3 py-2 rounded-md text-[13px] font-medium transition-all",
+              "w-full flex items-center gap-3 px-3 py-2 rounded-md text-[13px] font-medium transition-all cursor-pointer",
               pathname === item.path
                 ? "bg-slate-100 text-black shadow-sm"
                 : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"

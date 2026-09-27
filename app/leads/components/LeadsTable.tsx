@@ -38,6 +38,7 @@ export default function LeadsTable({
         <table className="w-full text-left border-collapse">
           <thead className="sticky top-0 bg-slate-50 z-10 border-b border-slate-200">
             <tr className="text-[11px] uppercase tracking-wider text-slate-400">
+              <th className="p-4">Customer ID</th>
               <th className="p-4">Customer</th>
               <th className="p-4">Company</th>
               <th className="p-4">Email</th>
@@ -67,6 +68,7 @@ export default function LeadsTable({
                     key={l.id}
                     className="border-b border-slate-50 hover:bg-slate-50 cursor-pointer"
                   >
+                    <td className="p-4 text-sm font-medium">{l.id}</td>
                     <td className="p-4 text-sm font-medium">
                       {l.First_Name} {l.Last_Name}
                     </td>
