@@ -3,17 +3,28 @@ import { NextResponse } from "next/server";
 import axios from "axios";
 import { getValidToken } from "@/lib/zoho-api";
 
-export async function GET() {
+export async function GET(req: Request) {
+  const { searchParams } = new URL(req.url);
+  const page = searchParams.get("page") || "1";
+  const perPage = "20"; // Zoho limit is usually 200
+
   try {
     const accessToken = await getValidToken();
     const response = await axios.get(
       "https://www.zohoapis.com/crm/v8/Contacts",
       {
         headers: { Authorization: `Zoho-oauthtoken ${accessToken}` },
-        params: { fields: "id,First_Name,Last_Name,Email,Account_Name,Phone" },
+        params: {
+          fields: "id,First_Name,Last_Name,Email,Phone,Account_Name",
+          page: page,
+          per_page: perPage,
+        },
       }
     );
-    return NextResponse.json({ data: response.data.data });
+    return NextResponse.json({
+      data: response.data.data,
+      info: response.data.info, // Zoho returns pagination info here
+    });
   } catch (error: any) {
     return handleApiError(error);
   }

@@ -4,9 +4,15 @@ import axios from "axios";
 import { getValidToken } from "@/lib/zoho-api";
 
 // GET: Retrieve all leads
-export async function GET() {
+export async function GET(request: Request) {
   try {
     const accessToken = await getValidToken();
+    const { searchParams } = new URL(request.url);
+    const page = searchParams.get("page") || "1";
+    const perPage = searchParams.get("perPage") || "10";
+
+    console.log("page number in get method", page);
+    console.log("per page in get method", perPage);
 
     const response = await axios.get("https://www.zohoapis.com/crm/v8/Leads", {
       headers: {
@@ -14,6 +20,8 @@ export async function GET() {
       },
       params: {
         fields: "id,First_Name,Last_Name,Email,Company,Phone",
+        page: parseInt(page),
+        per_page: parseInt(perPage),
       },
     });
 

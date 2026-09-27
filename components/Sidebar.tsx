@@ -25,7 +25,7 @@ export default function Sidebar() {
           <span className="font-bold text-sm leading-none italic">
             W3SCLOUD
           </span>
-          <span className="text-[10px] text-slate-400 mt-1">Free Workflow</span>
+          <span className="text-[10px] text-slate-400 mt-1">Zoho Manager</span>
         </div>
       </div>
 
