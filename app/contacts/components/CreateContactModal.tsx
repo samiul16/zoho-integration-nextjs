@@ -15,7 +15,7 @@ export default function CreateContactModal({ open, setOpen, onRefresh }: any) {
   const [formData, setFormData] = useState({
     First_Name: "",
     Last_Name: "",
-    Account_Id: "",
+    Account_Name: { id: "" },
     Email: "",
     Phone: "",
   });
@@ -92,7 +92,7 @@ export default function CreateContactModal({ open, setOpen, onRefresh }: any) {
           <select
             className="w-full p-2.5 rounded-lg border border-slate-200 text-sm focus:ring-1 focus:ring-black outline-none"
             onChange={(e) =>
-              setFormData({ ...formData, Account_Id: e.target.value })
+              setFormData({ ...formData, Account_Name: { id: e.target.value } })
             }
           >
             <option value="">Select Account</option>
