@@ -32,19 +32,33 @@ export default function LeadModal({
         )}
 
         <div className="space-y-3 mt-2">
-          {["First_Name", "Last_Name", "Company", "Email", "Phone"].map(
-            (field) => (
-              <input
-                key={field}
-                required={field !== "Phone"}
-                placeholder={field.replace("_", " ")}
-                className="w-full p-2.5 rounded-lg border border-slate-200 text-sm focus:ring-1 focus:ring-black outline-none"
-                value={formData[field as keyof typeof formData] || ""}
-                onChange={(e) =>
-                  setFormData({ ...formData, [field]: e.target.value })
-                }
-              />
-            )
+          {["First_Name", "Last_Name", "Email", "Company", "Phone"].map(
+            (field) => {
+              const isMandatory = ["First_Name", "Last_Name", "Email"].includes(
+                field
+              );
+              return (
+                <input
+                  key={field}
+                  type={
+                    field === "email"
+                      ? "email"
+                      : field === "Phone"
+                      ? "tel"
+                      : ("text" as const)
+                  }
+                  required={isMandatory}
+                  placeholder={`${field.replace("_", " ")}${
+                    isMandatory ? " *" : ""
+                  }`}
+                  className="w-full p-2.5 rounded-lg border border-slate-200 text-sm focus:ring-1 focus:ring-black outline-none"
+                  value={formData[field as keyof typeof formData] || ""}
+                  onChange={(e) =>
+                    setFormData({ ...formData, [field]: e.target.value })
+                  }
+                />
+              );
+            }
           )}
         </div>
 

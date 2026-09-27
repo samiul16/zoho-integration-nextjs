@@ -75,6 +75,8 @@ export default function AccountModal({
                 Phone
               </label>
               <input
+                type="tel"
+                placeholder="+880-123-456-7890"
                 className="w-full mt-1 p-2 border rounded-md text-sm"
                 value={formData.Phone}
                 onChange={(e) =>
@@ -87,6 +89,7 @@ export default function AccountModal({
                 Website
               </label>
               <input
+                type="url"
                 className="w-full mt-1 p-2 border rounded-md text-sm"
                 value={formData.Website}
                 onChange={(e) =>

@@ -51,6 +51,14 @@ export default function LeadsPage() {
         body: JSON.stringify(formData),
       });
       const json = await res.json();
+
+      if (
+        res.status === 400 &&
+        (json.code === "INVALID_REQUEST" || json.code === "MANDATORY_NOT_FOUND")
+      ) {
+        setError("Please fill in all required fields");
+        return;
+      }
       if (json.success) {
         setOpen(false);
         setFormData({
